@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1081996513816",
+    "project_id": "trackpay-366a1",
+    "storage_bucket": "trackpay-366a1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081996513816:android:8493537dec7070a40c696d",
+        "android_client_info": {
+          "package_name": "com.example.cashkaro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH3jiMAPNgv1V9IdzKmMVuL1TC4srq9F8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

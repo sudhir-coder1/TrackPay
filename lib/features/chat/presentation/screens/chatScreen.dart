@@ -53,6 +53,7 @@ class ChatScreen extends GetWidget<PaymentController> {
                   itemBuilder: (context, index) {
                     final item = controller.paymentList[index];
 
+
                     if (item.isSend == 1) {
                       return _buildSendItem(
                         "₹ ${item.amount.toStringAsFixed(0)}",
@@ -113,7 +114,7 @@ class ChatScreen extends GetWidget<PaymentController> {
                 children: [
                   Text(
                     "Current Balance",
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                   SizedBox(height: 2),
                   Text(

@@ -2,11 +2,14 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../n.dart';
+import '../../../home/presentation/controller/homeController.dart';
 import '../../../home/presentation/data/dataModel.dart';
 
 class PaymentController extends GetxController {
@@ -135,10 +138,16 @@ class PaymentController extends GetxController {
     if (_db == null) {
       Get.snackbar("Error", "DataBase not found");
     }
+
     final result = await _db?.insert(_table, model.toMap());
+
     if (result != null && result > 0) {
       Get.back();
-      _loadPayment();
+
+      await _loadPayment();
+
+      final homeController = Get.find<HomeController>();
+      await homeController.loadData();
     }
   }
 

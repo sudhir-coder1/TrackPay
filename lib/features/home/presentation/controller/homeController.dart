@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_native_contact_picker/model/contact.dart';
 import 'package:get/get.dart';
@@ -43,7 +45,7 @@ class HomeController extends GetxController {
       },
     );
     _database = db;
-    _loadData();
+    loadData();
   }
 
   Future<void> saveData(DetailDataModel model) async {
@@ -52,11 +54,11 @@ class HomeController extends GetxController {
     }
     final result = await _database?.insert(_tableName, model.toMap());
     if (result != null && result > 0) {
-      _loadData();
+     await loadData();
     }
   }
 
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     if (_database == null) {
       Get.snackbar("Error", "Database Not found");
       return;
@@ -76,6 +78,8 @@ class HomeController extends GetxController {
     FROM CONTACT c
     LEFT JOIN transactionPayment t ON t.user_id = c.id
     GROUP BY c.id''');
+
+    log("_loadData : $records");
     if (records != null) {
       detailsList.assignAll(records.map((e) => DetailDataModel.fromMap(e)));
     }

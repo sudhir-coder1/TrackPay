@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:cashkaro/core/pageRoute.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends GetWidget<HomeController> {
         onPressed: () {
           _showOption();
         },
-        label: Text("Add Entry"),
+        label: Text("Add Entry  "),
         icon: Icon(Icons.add),
       ),
       appBar: AppBar(
@@ -31,7 +32,6 @@ class HomeScreen extends GetWidget<HomeController> {
           children: [
             Row(
               spacing: 5,
-
               children: [
                 Expanded(
                   child: Container(
@@ -51,12 +51,14 @@ class HomeScreen extends GetWidget<HomeController> {
                             fontSize: 13,
                           ),
                         ),
-                        Text(
-                          "₹ 1000",
-                          style: TextStyle(
-                            fontWeight: FontWeight(500),
-                            color: Colors.white,
-                            fontSize: 15,
+                        Obx(
+                          ()=>Text(
+                            _getPayAmount(controller.detailsList),
+                            style: TextStyle(
+                              fontWeight: FontWeight(500),
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ],
@@ -82,11 +84,14 @@ class HomeScreen extends GetWidget<HomeController> {
                             fontSize: 13,
                           ),
                         ),
-                        Text("234",
-                          style: TextStyle(
-                            fontWeight: FontWeight(500),
-                            color: Colors.white,
-                            fontSize: 15,
+                        Obx(
+                            ()=> Text(
+                            _getReceiveAmount(controller.detailsList),
+                            style: TextStyle(
+                              fontWeight: FontWeight(500),
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ],
@@ -108,17 +113,19 @@ class HomeScreen extends GetWidget<HomeController> {
               ),
             ),
             Expanded(
-              child: Obx((){
+              child: Obx(() {
+
                 if (controller.detailsList.isEmpty) {
                   return Center(child: Text("Add Entry"));
-                } return ListView.builder(
+                }
+                return ListView.builder(
                   itemCount: controller.detailsList.length,
+
                   itemBuilder: (context, index) {
-                    final item=controller.detailsList[index];
+                    final item = controller.detailsList[index];
                     return InkWell(
                       onTap: () {
-                        Get.toNamed(AppPages.chat,arguments: item);
-
+                        Get.toNamed(AppPages.chat, arguments: item);
                       },
                       child: Container(
                         margin: EdgeInsets.only(top: 10),
@@ -134,10 +141,12 @@ class HomeScreen extends GetWidget<HomeController> {
                           spacing: 10,
                           children: [
                             CircleAvatar(
-                                backgroundColor: Colors.white30,
-                                child: Text(item.name[0].toUpperCase(),style: TextStyle(
-                                  fontWeight: FontWeight(600),
-                                ),)),
+                              backgroundColor: Colors.white30,
+                              child: Text(
+                                item.name[0].toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight(600)),
+                              ),
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -145,7 +154,6 @@ class HomeScreen extends GetWidget<HomeController> {
                                   item.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-
                                 ),
                                 Text(
                                   item.number,
@@ -154,25 +162,31 @@ class HomeScreen extends GetWidget<HomeController> {
                               ],
                             ),
                             Spacer(),
-                            Column(
-                              children: [
-                                Text(
-                                  item.balance as String,
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight(500),
+                             Column(crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "₹ ${(item.balance ?? 0).abs().toStringAsFixed(0)}",
+                                    style: TextStyle(
+                                      color: (item.balance ?? 0) > 0
+                                          ? Colors.green
+                                          : (item.balance ?? 0) < 0
+                                          ? Colors.red
+                                          : Colors.grey,
+
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Receive",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight(400),
+                                  Text(
+                                    (item.balance ?? 0) > 0
+                                        ? "Receive"
+                                        : (item.balance ?? 0) < 0
+                                        ? "Pay"
+                                        : "Settled",
+                                    style: TextStyle(fontSize: 12),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
                           ],
                         ),
                       ),
@@ -180,8 +194,7 @@ class HomeScreen extends GetWidget<HomeController> {
                   },
                 );
               }),
-            )
-
+            ),
           ],
         ),
       ),
@@ -225,7 +238,6 @@ class HomeScreen extends GetWidget<HomeController> {
       ),
     );
   }
-
   Future<void> _showBottomSheet() async {
     final nameController = TextEditingController();
     final numberController = TextEditingController();
@@ -283,13 +295,8 @@ class HomeScreen extends GetWidget<HomeController> {
                         ),
                       );
                     },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    child: Text(
-                      "Save",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    style: TextButton.styleFrom(backgroundColor: Colors.green),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -303,4 +310,26 @@ class HomeScreen extends GetWidget<HomeController> {
       controller.saveData(result);
     }
   }
+  String _getReceiveAmount(RxList<DetailDataModel> detailsList) {
+    var amount = 0.0;
+    for (var item in detailsList) {
+      if ((item.balance ?? 0.0) > 0) {
+        amount += item.balance ?? 0.0;
+      }
+    }
+
+    return "₹${amount.abs().toStringAsFixed(0)}";
+
+  }
+}
+String _getPayAmount(RxList<DetailDataModel> detailsList) {
+  var amount = 0.0;
+
+
+  for (var item in detailsList) {
+    if ((item.balance ?? 0.0) < 0) {
+      amount += item.balance ?? 0.0;
+    }
+  }
+  return "₹${amount.abs().toStringAsFixed(0)}";
 }
